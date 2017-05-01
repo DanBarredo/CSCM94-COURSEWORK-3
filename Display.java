@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * @class Display
  * @brief Display loads GUI and handles game flow
- * ver 1.2
+ * ver 1.4
  * 
  */
 
@@ -76,7 +76,7 @@ public class Display extends JFrame implements ActionListener {
     
     setTitle("BLACKJACK");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setBounds(100, 100, 1000, 500);
+    setBounds(100, 100, 800, 400+100*(nPlayers-1));
     setResizable(false);
     contentPane = new JPanel();
     contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -97,32 +97,34 @@ public class Display extends JFrame implements ActionListener {
     topPanel.add(winner);
     
     for (int i=1; i<nPlayers; i++){ //Adds a panel and hit and stand button for each player
-      allCardLabels.add(new ArrayList<JLabel>(piCardLabels));
       allHitButtons.add(new JButton());
       allStandButtons.add(new JButton());
+      allCardLabels.add(new ArrayList<JLabel>(piCardLabels));
       allPlayerPanels.add(new JPanel());
       allPlayerLabels.add(new JLabel(allPlayer[i].getName()));
     }
     int count = 0;
+    Dimension d = new Dimension(100,26);
     for (JButton hitButton:allHitButtons){  //Sets information for each hit button
       count++;
-      hitButton.setText(" Player " + count + ": Hit");
+      hitButton.setText(allPlayer[count].getName() + ": Hit");
+      hitButton.setPreferredSize(d);
       hitButton.addActionListener(this);
       hitButton.setEnabled(false);
     }
     count = 0;
     for (JButton standButton:allStandButtons){//Sets information for each stand button
       count++;
-      standButton.setText(" Player " + count + ": Stand");
+      standButton.setText("Stand");
       standButton.addActionListener(this);
       standButton.setEnabled(false); 
     }
     count =0;
     for (JPanel playerPanel:allPlayerPanels){//Adds buttons to each panel
-      count++;
       playerPanel.add(allHitButtons.get(count));
       playerPanel.add(allStandButtons.get(count));
       playerPanel.add(allPlayerLabels.get(count));
+      count++;
     }
     
     lblDealer.setText(allPlayer[0].getName());
@@ -131,12 +133,16 @@ public class Display extends JFrame implements ActionListener {
     setLayout(new BorderLayout());
     contentPane.add(dpanel, BorderLayout.SOUTH);
     contentPane.add(topPanel, BorderLayout.NORTH);
+    
+    JPanel tempPanel = new JPanel();
+    tempPanel.setLayout(new GridLayout(count,1,0,10));
+    
     count =0;
-    for (JPanel playerPanel:allPlayerPanels){//Adds buttons to each panel
-      if (count%2==0) contentPane.add(playerPanel, BorderLayout.WEST);
-      else contentPane.add(playerPanel, BorderLayout.EAST);
+    for (JPanel playerPanel:allPlayerPanels){///Sets up panels
+      tempPanel.add(playerPanel);
       count++;
     }
+    contentPane.add(tempPanel, BorderLayout.WEST);
   }
   
   public void updateLabels(){
@@ -164,20 +170,22 @@ public class Display extends JFrame implements ActionListener {
       i++;
     }
     
+    i=0;
     for (ArrayList pCardLabels:allCardLabels){
-      i=1;
+      
       allPlayerPanels.get(i).add(allPlayerLabels.get(i));
       for (int j=0; j<pCardLabels.size(); j++){        //set icons for all dealer cards
         JLabel temp = (JLabel) pCardLabels.get(j);
-        temp.setIcon(new ImageIcon(allPlayer[i].getCard(j).getPic()));
-        allPlayerPanels.get(j).add(temp);
+        System.out.println("Player " + i + ". Setting card icon " + j + ". " + allPlayer[i+1].getCard(j)); ///TEST LINE
+        temp.setIcon(new ImageIcon(allPlayer[i+1].getCard(j).getPic()));
+        allPlayerPanels.get(i).add(temp);
       }
       i++;
     }
   }
     /// Action listener: checks if buttons are pressed
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource().equals(dealButton)) {
+    if (e.getSource().equals(dealButton)) { ///Deal Button
       
       for (int i=0; i<allPlayer[0].getHandLength(); i++){
         dealerCardLabels.add(new JLabel());
@@ -190,8 +198,6 @@ public class Display extends JFrame implements ActionListener {
         }
       }
       
-      setAllIcons(false);
-      
       for (JButton hitButton:allHitButtons){  //Enables each hit button
         hitButton.setEnabled(true);
       }
@@ -202,12 +208,16 @@ public class Display extends JFrame implements ActionListener {
       
       dpanel.repaint();
       
+      count=0;
       for (JPanel playerPanel:allPlayerPanels){//Adds buttons to each panel
-        count++;
         playerPanel.repaint();
+        playerPanel.add(allHitButtons.get(count));
         playerPanel.add(allStandButtons.get(count));
         playerPanel.add(allPlayerLabels.get(count));
+        count++;
       }
+      
+      setAllIcons(false);
       
       revalidate();
       
@@ -229,13 +239,13 @@ public class Display extends JFrame implements ActionListener {
         if (currentGame.checkHit(count)==true) {
           allPlayer[count].hit();
         }
-        allCardLabels.get(count).add(new JLabel());
+        allCardLabels.get(count-1).add(new JLabel());
         setAllIcons(false);
         revalidate();
         
         if (currentGame.checkHit(count)==false) {
           hitButton.setEnabled(false);
-          standButton.setEnabled(false);
+          allStandButtons.get(count-1).setEnabled(false);
         }
         
         checkEndGame();
@@ -248,13 +258,15 @@ public class Display extends JFrame implements ActionListener {
         }
       }
     }
+    count =0;
     for (JButton standButton:allStandButtons){//Checks each stand button
       if (e.getSource().equals(standButton)) { 
         standButton.setEnabled(false);
-        hitButton.setEnabled(false);
+        allHitButtons.get(count).setEnabled(false);
         
         checkEndGame();
       }
+      count++;
     }
     if (e.getSource().equals(resetButton)) {
       dpanel.removeAll(); //Resets all panels
@@ -291,13 +303,16 @@ public class Display extends JFrame implements ActionListener {
     if (checkGameOver()) {
       dealerDraw();
       Player[] winners = currentGame.matchOutcome();
-      if (winners.length>1) {//more than two people win
+      if (winners==null) displayWinner(null);
+      else if (winners.length>1) {//more than two people win
         endGame();
         for (Player pi:winners) pi.increaseScore(1/(float) winners.length);
         displayWinner(winners);
       }
       else {
         endGame();
+        System.out.println(currentGame.sumHand(winners[0]));
+        System.out.println(winners[0]);
         winners[0].increaseScore(1);
         displayWinner(winners[0]);
       }
@@ -307,7 +322,8 @@ public class Display extends JFrame implements ActionListener {
   
     /// Displays the winning player in the winner label
   public void displayWinner(Player p){  
-     winner.setText("Winner: " + p.getName());
+     if (p==null) winner.setText("No winners!");
+     else winner.setText("Winner: " + p.getName());
   }
     
     /// Displays the winning players in the winner label
@@ -325,7 +341,7 @@ public class Display extends JFrame implements ActionListener {
     /// Outputs a boolean whether game is over
   public boolean checkGameOver(){
     for (JButton hitButton:allHitButtons){  //If any hitButtons are enabled, game is not over
-      if (hitButton.isEnabled()==true) {
+      if (hitButton.isEnabled()) {
         return false;
       }
     }
@@ -348,10 +364,8 @@ public class Display extends JFrame implements ActionListener {
     revalidate();
     dpanel.repaint();
   
-    standButton.setEnabled(false);
-    standButtonTwo.setEnabled(false);
-    hitButton.setEnabled(false);
+    for (JButton hitButton:allHitButtons) hitButton.setEnabled(false);
+    for (JButton standButton:allStandButtons) standButton.setEnabled(false);
     resetButton.setEnabled(true);
-    hitButtontwo.setEnabled(false);
   }
 }

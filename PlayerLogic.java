@@ -5,7 +5,7 @@
 /**
  * @class PlayerLogic
  * @brief PlayerLogic handles Card logic checks
- * ver 1.2
+ * ver 1.4
  * provides function for checking card count, to see if player can hit, stand or is above 21. \n
  * Dependant on the class GameLogic for the function sumHand. \n 
  * The classes Dealer and Player provide types.

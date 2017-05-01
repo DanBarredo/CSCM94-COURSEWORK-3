@@ -5,7 +5,7 @@
 /**
  * @class Player
  * @brief
- * ver 1.2
+ * ver 1.4
  */
 
 class Player {

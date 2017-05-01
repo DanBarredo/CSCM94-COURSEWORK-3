@@ -36,7 +36,7 @@ import java.util.ArrayList;
 /**
  * @class Interface
  * @brief Interface handles the GUI.
- * ver1.2
+ * ver1.4
  */
 class Interface extends JFrame implements ActionListener {
 
@@ -58,7 +58,7 @@ private JPanel contentPane; /// Main content window
 
   JButton Go = new JButton("Continue"); /// Button to continue game
   JButton Play = new JButton("Play Blackjack"); /// Button to start game
-  private int numberofplayers = 1; /// Number of people playing the game
+  private int numberofplayers=1; /// Number of people playing the game
   String[] allNames; /// Array of player names
   Player[] allPlayers; /// Array of players
   ArrayList<JTextField> allPlayerTxts = new ArrayList<JTextField>();  /// Output player one text field
@@ -74,7 +74,8 @@ private JPanel contentPane; /// Main content window
       this.dispose(); 
       createFrame(numberofplayers);
     } else if(e.getSource().equals(Play)) {
-      for (int i=1; i<=numberofplayers; i++){
+      allNames = new String[numberofplayers];
+      for (int i=0; i<numberofplayers; i++){
         allNames[i] = allPlayerTxts.get(i).getText();
       }
       this.dispose(); 
@@ -82,16 +83,17 @@ private JPanel contentPane; /// Main content window
     } else {
       JComboBox cb = (JComboBox)e.getSource();
       String playeramount = (String)cb.getSelectedItem();
+      
       updatePlayers(playeramount);
     }
   }
     
-  /// Change number of players to current number of players playing
+    /// Change number of players to current number of players playing
   public void updatePlayers(String amount) {
     numberofplayers = Integer.parseInt(amount);
   }
 
-  /// Initialise game user interface
+    /// Initialise game user interface
   public void initGUI() {
     GameLogic logic = new GameLogic(allNames);
     allPlayers = logic.getPlayers().clone();
@@ -99,7 +101,7 @@ private JPanel contentPane; /// Main content window
     runGame.setVisible(true);
   }
     
-      /// Setup window layout. Constructor no parameters.
+    /// Setup window layout. Constructor no parameters.
   public Interface() {
     setTitle("Blackjack");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,22 +143,21 @@ private JPanel contentPane; /// Main content window
 
     Go.addActionListener(this);
     dropdown.add(Go);
-      
+    
   }
 
-      /// Setup window layout. Constructor with parameters. \n
-      /// Parameter integer "nPlayers" is number of players. Range one to four.
+    /// Setup window layout. Constructor with parameters.
+    /// Parameter integer "nPlayers" is number of players. Range one to four.
   public Interface(int nPlayers) {
+    updatePlayers(String.valueOf(nPlayers));
     setTitle("Blackjack");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setBounds(100,100,700,250);
+    setBounds(100,100,600,300);
     setResizable(false);
     contentPane = new JPanel();
     contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     contentPane.setLayout(new BorderLayout(0, 0));
     setContentPane(contentPane);
-    
-    System.out.println("Properties set"); /// TEST LINE
 
     JPanel background = new JPanel();
     background.setBackground(new Color(34, 139, 34));
@@ -182,13 +183,11 @@ private JPanel contentPane; /// Main content window
     image.setIcon(new ImageIcon("Blackjack.png"));
     logo.add(image);
     
-    System.out.println("Interface objects created"); /// TEST LINE
-    
     for (int i=1; i<=nPlayers; i++){
       allPlayerTxts.add(new JTextField(15));
       allPlayerLabels.add(new JLabel());
     }
-    System.out.println("ArrayLists objects created"); /// TEST LINE
+    
     int count = 0;
     for (JLabel pLbl:allPlayerLabels){
       count++;
@@ -198,31 +197,25 @@ private JPanel contentPane; /// Main content window
       p.setPreferredSize(new Dimension(100, 25));
       p.addActionListener(this); 
     }
-    System.out.println("ArrayLists objects set"); /// TEST LINE
-    for (int i=1; i<=nPlayers; i++){
+    for (int i=0; i<nPlayers; i++){
       dropdown.add((JLabel) allPlayerLabels.get(i));
       dropdown.add((JTextField) allPlayerTxts.get(i)); 
-    } 
-    System.out.println("Dropdown updated"); /// TEST LINE
-
+    }
+    
     Play.addActionListener(this);
     Instance.add(Play);
   }
 
     /// Place window in operating system or throw error.
   public static void createFrame(final int bb) {
-    System.out.println("Creating new interface frame"); /// TEST LINE
-    Interface frame2 = new Interface(bb);
-    frame2.setVisible(true);
-    /*EventQueue.invokeLater(new Runnable() {
+    EventQueue.invokeLater(new Runnable() {
       public void run() {
-      
         try {
+          System.out.println("Frame parameter: " + bb);  ///TESTLINE
           Interface frame2 = new Interface(bb);
           frame2.setVisible(true);
         } catch (Exception e) {}
       }
     });
-    */
   }
 }

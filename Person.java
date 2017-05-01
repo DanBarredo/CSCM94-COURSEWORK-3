@@ -5,7 +5,7 @@
 /**
  * @class Person
  * @brief Person is an extension of player for the user of the program.
- * ver 1.2
+ * ver 1.4
  */
 class Person extends Player{
     /// Creates a Person

@@ -7,7 +7,7 @@
  * @brief Lock handles Card decks including the actions of shuffle and deal
  * 
  * Lock handles 4 decks of Cards- shuffles them and deals them out. It keeps track of them and the remaining Cards left available to play.
- * ver 1.2
+ * ver 1.4
  */
 public class Lock {
     

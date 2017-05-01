@@ -5,7 +5,7 @@
 /**
  * @class Player
  * @brief Dealer deals Cards and is the competition.
- * ver1.2
+ * ver1.4
  */
 class Dealer extends Player{
   /// Creates a Dealer

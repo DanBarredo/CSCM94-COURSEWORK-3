@@ -5,16 +5,16 @@
 /**
  * @class GameLogic
  * @brief GameLogic deals cards and is the competition.
- * ver1.2
+ * ver1.4
  */
 class GameLogic {
   private int matchCount;   /// How many games 
   private int turnCount; /// Round of the game
   private Lock lock = new Lock(); /// 4 decks of cards
   private static Dealer dealer = new Dealer(); /// Opposition for players
-  private static Person[] allPersons = new Person[2]; /// Player characters
-  private static Player[] allPlayers = new Player[3]; /// Players and Dealer
-  private String[] allNames = new String[2]; /// Player names
+  private static Person[] allPersons; /// Player characters
+  private static Player[] allPlayers; /// Players and Dealer
+  private String[] allNames; /// Player names
   
     ///Empty Constructor
   public GameLogic(){}
@@ -53,6 +53,7 @@ class GameLogic {
   
     ///Initialises n Person instances
   public void createPersons(String[] n, Lock lock){ //Initialise person players
+    allPersons = new Person[n.length];
     for (int i=0; i<n.length; i++) {      //set players
       allPersons[i] = new Person(n[i], lock);
     }
@@ -60,8 +61,8 @@ class GameLogic {
   
     ///Creates a Player object array to hold all players and the dealer
   public void createPlayerArray(){ //Create array of all players including dealer
+    allPlayers = new Player[allPersons.length+1];
     allPlayers[0] = dealer;
-    
     for (int i=1; i<=allPersons.length; i++) {      //set players
       allPlayers[i] = allPersons[i-1];
     }

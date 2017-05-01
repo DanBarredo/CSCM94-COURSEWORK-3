@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @class Card
  * @brief Card stores the card's information 
- * ver1.2
+ * ver1.4
  */
 public class Card{
     
