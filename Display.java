@@ -303,7 +303,7 @@ public class Display extends JFrame implements ActionListener {
     if (checkGameOver()) {
       dealerDraw();
       Player[] winners = currentGame.matchOutcome();
-      if (winners==null) displayWinner(null);
+      if (winners==null) displayWinner(true);
       else if (winners.length>1) {//more than two people win
         endGame();
         for (Player pi:winners) pi.increaseScore(1/(float) winners.length);
@@ -324,6 +324,11 @@ public class Display extends JFrame implements ActionListener {
   public void displayWinner(Player p){  
      if (p==null) winner.setText("No winners!");
      else winner.setText("Winner: " + p.getName());
+  }
+  
+    /// Displays no winners in the winner label
+  public void displayWinner(boolean noWinners){  
+     winner.setText("No winners!");
   }
     
     /// Displays the winning players in the winner label
@@ -363,6 +368,10 @@ public class Display extends JFrame implements ActionListener {
     setAllIcons(true);
     revalidate();
     dpanel.repaint();
+    currentGame.increaseMatchCount();
+    if (currentGame.getMatchCount()>=21){
+      
+    }
   
     for (JButton hitButton:allHitButtons) hitButton.setEnabled(false);
     for (JButton standButton:allStandButtons) standButton.setEnabled(false);

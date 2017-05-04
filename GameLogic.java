@@ -19,7 +19,7 @@ class GameLogic {
     ///Empty Constructor
   public GameLogic(){}
   
-    ///Constructor
+    /// Constructor for new game
   public GameLogic(String[] names){
     allNames = names.clone();
     matchCount = 0;
@@ -30,6 +30,25 @@ class GameLogic {
     createPersons(names, lock);
     createPlayerArray();
     
+  }
+  
+    /// Constructor for loaded game
+  public GameLogic(String[] names, String[] scores){  
+    allNames = names.clone();
+    matchCount = 0;
+    turnCount = 0;
+    
+    lock = createLock();
+    dealer = new Dealer(lock); //Initialises players/dealers
+    createPersons(names, lock);
+    createPlayerArray();
+    
+    
+    float score;
+    for (int i=0; i<allPlayers.length; i++){
+      score = Float.parseFloat(scores[i]);
+      allPlayers[i].increaseScore(score);
+    }
   }
   
     ///Initialises the lock
@@ -166,6 +185,15 @@ class GameLogic {
     if (PlayerLogic.AllowHit(dealer)==true) dealer.hit(); //dealer gets extra card
     
     return -1;        //turn over
+  }
+  
+    ///Increments the matchCount variable
+  public void increaseMatchCount(){
+    matchCount++;
+  }
+  
+  public int getMatchCount(){
+    return matchCount;
   }
   
   public static void main(String[] args){

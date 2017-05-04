@@ -61,6 +61,7 @@ private JPanel contentPane; /// Main content window
   private int numberofplayers=1; /// Number of people playing the game
   String[] allNames; /// Array of player names
   Player[] allPlayers; /// Array of players
+  String[] allScores;  /// Array of loaded scores
   ArrayList<JTextField> allPlayerTxts = new ArrayList<JTextField>();  /// Output player one text field
   JTextField p2 = new JTextField(15); /// Output player two text field
   ArrayList<JLabel> allPlayerLabels = new ArrayList<JLabel>();///Array of labels describing text fields
@@ -95,7 +96,9 @@ private JPanel contentPane; /// Main content window
 
     /// Initialise game user interface
   public void initGUI() {
-    GameLogic logic = new GameLogic(allNames);
+    GameLogic logic;
+    if (allScores==null) logic = new GameLogic(allNames);
+    else logic = new GameLogic(allNames, allScores);
     allPlayers = logic.getPlayers().clone();
     Display runGame = new Display(allPlayers, logic);
     runGame.setVisible(true);
