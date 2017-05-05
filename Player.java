@@ -46,8 +46,9 @@ class Player {
     return score;
   }
   
+    ///Returns the player's score as a string
   public String getScoreString(){
-	String scr = String.valueOf(score);
+    String scr = String.valueOf(score);
     return scr;
   }
   
