@@ -25,13 +25,6 @@ class Player {
     this.createHand();
   }
   
-  public Player(String n, Lock l, String sc){  
-    name = n;
-	score = Float.parseFloat(sc);
-    this.lock = l;     //Make sure all objects are using the same lock
-    this.createHand();
-  }
-  
     ///Creates hand with two cards
   public void createHand(){ 
     hand.add(lock.dealCard());
