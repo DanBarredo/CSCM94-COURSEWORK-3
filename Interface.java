@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  * @class Interface
@@ -56,8 +57,9 @@ private JPanel contentPane; /// Main content window
     });
   }
 
-  JButton Go = new JButton("Continue"); /// Button to continue game
+  JButton Go = new JButton("New Game"); /// Button to continue game
   JButton Play = new JButton("Play Blackjack"); /// Button to start game
+  JButton Load = new JButton("Load Saved Game"); /// Button to load saved game
   private int numberofplayers=1; /// Number of people playing the game
   String[] allNames; /// Array of player names
   Player[] allPlayers; /// Array of players
@@ -71,7 +73,36 @@ private JPanel contentPane; /// Main content window
     /// + Update player information
     /// + Choose player
   public void actionPerformed(ActionEvent e) {
-    if(e.getSource().equals(Go)) {
+	if(e.getSource().equals(Load)) {
+		try {
+		BufferedReader xxx = new BufferedReader(new FileReader("savednames.txt"));
+		BufferedReader yyy = new BufferedReader(new FileReader("savedscores.txt"));
+        ArrayList<String> names = new ArrayList<String>();
+		String s;
+        while(( s = xxx.readLine()) != null) {
+        names.add(s);
+        
+        }
+        xxx.close();
+		ArrayList<String> scores = new ArrayList<String>();
+		String ss;
+		while(( ss = yyy.readLine()) != null) {
+        scores.add(ss);
+        }
+        yyy.close();
+		String[] namesArray = names.toArray(new String[0]);
+		String[] scoresArray = scores.toArray(new String[0]);
+		System.out.println(namesArray[0]);
+        System.out.println(scoresArray[0]);
+		initGUI(namesArray, scoresArray);
+		}
+		catch (IOException e2) {e2.printStackTrace();}
+
+		
+		
+	  this.dispose();
+    }		 
+    else if(e.getSource().equals(Go)) {
       this.dispose(); 
       createFrame(numberofplayers);
     } else if(e.getSource().equals(Play)) {
@@ -130,6 +161,7 @@ private JPanel contentPane; /// Main content window
     JPanel logo = new JPanel();
     logo.setBackground(new Color(34, 139, 34));
     contentPane.add(logo, BorderLayout.NORTH);
+	
 
     JLabel image = new JLabel("");
     image.setIcon(new ImageIcon("Blackjack.png"));
@@ -137,15 +169,21 @@ private JPanel contentPane; /// Main content window
 
     JLabel dropDown = new JLabel("Select number of players: ");
     dropdown.add(dropDown);
+	
   
     String[] PlayerNumber = {"1", "2", "3", "4"};
     JComboBox NumberOfPlayers = new JComboBox(PlayerNumber);
     NumberOfPlayers.setSelectedIndex(0);
     NumberOfPlayers.addActionListener(this);
     dropdown.add(NumberOfPlayers);
-
+	
     Go.addActionListener(this);
     dropdown.add(Go);
+	
+	Load.addActionListener(this);
+    dropdown.add(Load);
+	
+
     
   }
 
@@ -220,5 +258,12 @@ private JPanel contentPane; /// Main content window
         } catch (Exception e) {}
       }
     });
+  }
+  
+  public void initGUI(String[] names, String[] scores) {
+    GameLogic logic2 = new GameLogic(names, scores);
+	allPlayers = logic2.getPlayers().clone();
+    Display runGame = new Display(allPlayers, logic2);
+    runGame.setVisible(true);
   }
 }

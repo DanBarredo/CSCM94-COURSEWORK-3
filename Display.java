@@ -15,6 +15,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @class Display
@@ -48,6 +54,7 @@ public class Display extends JFrame implements ActionListener {
   JButton standButtonTwo=new JButton();
   JButton resetButton=new JButton();
   JButton hitButtontwo=new JButton();
+  JButton saveButton = new JButton("Save Game"); /// Button to save game.
 
   //Card labels
   ArrayList<ArrayList<JLabel>> allCardLabels = new ArrayList<ArrayList<JLabel>>();
@@ -92,9 +99,12 @@ public class Display extends JFrame implements ActionListener {
     resetButton.addActionListener(this);
     resetButton.setEnabled(false); 
     
+	saveButton.addActionListener(this);
+	
     topPanel.add(dealButton);
     topPanel.add(resetButton);
     topPanel.add(winner);
+	topPanel.add(saveButton);
     
     for (int i=1; i<nPlayers; i++){ //Adds a panel and hit and stand button for each player
       allHitButtons.add(new JButton());
@@ -185,6 +195,9 @@ public class Display extends JFrame implements ActionListener {
   }
     /// Action listener: checks if buttons are pressed
   public void actionPerformed(ActionEvent e) {
+	if (e.getSource().equals(saveButton)) { 
+        saveGame(allPlayer);
+    }
     if (e.getSource().equals(dealButton)) { ///Deal Button
       
       for (int i=0; i<allPlayer[0].getHandLength(); i++){
@@ -376,5 +389,22 @@ public class Display extends JFrame implements ActionListener {
     for (JButton hitButton:allHitButtons) hitButton.setEnabled(false);
     for (JButton standButton:allStandButtons) standButton.setEnabled(false);
     resetButton.setEnabled(true);
+  }
+  
+  public void saveGame(Player[] Players) {
+    try {
+	  PrintWriter writeNames = new PrintWriter("savednames.txt");
+	  PrintWriter writeScores = new PrintWriter("savedscores.txt");
+	  for (int i=0;i<Players.length;i++) {
+		writeNames.println(Players[i].getName());
+	  }
+	  writeNames.close();
+	  for (int i=0;i<Players.length;i++) {
+	    writeScores.println(Players[i].getScoreString());
+	  }
+	  writeScores.close();
+	}
+	catch (IOException e) {e.printStackTrace();}
+
   }
 }

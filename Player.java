@@ -25,6 +25,13 @@ class Player {
     this.createHand();
   }
   
+  public Player(String n, Lock l, String sc){  
+    name = n;
+	score = Float.parseFloat(sc);
+    this.lock = l;     //Make sure all objects are using the same lock
+    this.createHand();
+  }
+  
     ///Creates hand with two cards
   public void createHand(){ 
     hand.add(lock.dealCard());
@@ -44,6 +51,11 @@ class Player {
     ///Returns the score variable
   public float getScore(){
     return score;
+  }
+  
+  public String getScoreString(){
+	String scr = String.valueOf(score);
+    return scr;
   }
   
     ///Returns the length of the hand variable
