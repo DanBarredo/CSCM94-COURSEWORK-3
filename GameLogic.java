@@ -9,7 +9,6 @@
  */
 class GameLogic {
   private int matchCount;   /// How many games 
-  private int turnCount; /// Round of the game
   private Lock lock = new Lock(); /// 4 decks of cards
   private static Dealer dealer = new Dealer(); /// Opposition for players
   private static Person[] allPersons; /// Player characters
@@ -23,7 +22,6 @@ class GameLogic {
   public GameLogic(String[] names){
     allNames = names.clone();
     matchCount = 0;
-    turnCount = 0;
     
     lock = createLock();
     dealer = new Dealer(lock); //Initialises players/dealers
@@ -36,16 +34,16 @@ class GameLogic {
   public GameLogic(String[] names, String[] scores){  
     allNames = names.clone();
     matchCount = 0;
-    turnCount = 0;
     
     lock = createLock();
     dealer = new Dealer(lock); //Initialises players/dealers
-    createPersons(names, lock);
+    String[] pNames = new String[names.length-1];
+    for (int i=1; i<names.length; i++) pNames[i-1]=names[i];
+    createPersons(pNames, lock);
     createPlayerArray();
     
-    
     float score;
-    for (int i=0; i<allPlayers.length; i++){
+    for (int i=0; i<scores.length; i++){
       score = Float.parseFloat(scores[i]);
       allPlayers[i].increaseScore(score);
     }
@@ -160,38 +158,12 @@ class GameLogic {
     return PlayerLogic.AllowHit(allPersons[i-1]);
   }
   
-    ///Returns player index if they get 21. returns -1 if turn over. returns -2 if match over.
-  public int runTurn(){
-    turnCount++;
-    boolean allBust = true; //assume all bust at first
-    boolean allStand = true;
-    
-    for (int i=0; i<allPersons.length; i++) {   //cycle through players
-      if (PlayerLogic.AllowHit(allPersons[i])==true) {      //check bust
-        allBust = false;
-        System.out.print("Player: " + allPersons[i].getName() + ". Hit? "); //check input for hit
-        String inp = System.console().readLine();
-        if (inp.equals("y")) {
-          allStand = false;
-          allPersons[i].hit();
-        }
-        if (sumHand(allPersons[i])==21) return i; //return premature winner if 21
-        if (sumHand(allPersons[i])>21) System.out.println(allPersons[i].getName() + " went bust!");
-      }
-    }
-    
-    if (allBust||allStand) return -2;         //if all are bust or all stand end match
-    
-    if (PlayerLogic.AllowHit(dealer)==true) dealer.hit(); //dealer gets extra card
-    
-    return -1;        //turn over
-  }
-  
     ///Increments the matchCount variable
   public void increaseMatchCount(){
     matchCount++;
   }
   
+    ///Returns the number of matches
   public int getMatchCount(){
     return matchCount;
   }

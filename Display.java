@@ -99,12 +99,13 @@ public class Display extends JFrame implements ActionListener {
     resetButton.addActionListener(this);
     resetButton.setEnabled(false); 
     
-	saveButton.addActionListener(this);
-	
+    saveButton.addActionListener(this);
+    saveButton.setEnabled(false);
+    
     topPanel.add(dealButton);
     topPanel.add(resetButton);
     topPanel.add(winner);
-	topPanel.add(saveButton);
+    topPanel.add(saveButton);
     
     for (int i=1; i<nPlayers; i++){ //Adds a panel and hit and stand button for each player
       allHitButtons.add(new JButton());
@@ -122,6 +123,7 @@ public class Display extends JFrame implements ActionListener {
       hitButton.addActionListener(this);
       hitButton.setEnabled(false);
     }
+    updateLabels();
     count = 0;
     for (JButton standButton:allStandButtons){//Sets information for each stand button
       count++;
@@ -195,8 +197,9 @@ public class Display extends JFrame implements ActionListener {
   }
     /// Action listener: checks if buttons are pressed
   public void actionPerformed(ActionEvent e) {
-	if (e.getSource().equals(saveButton)) { 
-        saveGame(allPlayer);
+    if (e.getSource().equals(saveButton)) { 
+      saveButton.setEnabled(false);
+      saveGame(allPlayer);
     }
     if (e.getSource().equals(dealButton)) { ///Deal Button
       
@@ -235,6 +238,7 @@ public class Display extends JFrame implements ActionListener {
       revalidate();
       
       dealButton.setEnabled(false);
+      saveButton.setEnabled(false);
       
       for (int i=0; i<nPlayers; i++){
         if (PlayerLogic.Check21(allPlayer[i])==true) {  //Checks for a premature win with instant 21
@@ -308,6 +312,7 @@ public class Display extends JFrame implements ActionListener {
       winner.setText("");
       
       allPlayer = currentGame.getPlayers().clone();
+      saveButton.setEnabled(true);
     }
   }
     
@@ -391,20 +396,20 @@ public class Display extends JFrame implements ActionListener {
     resetButton.setEnabled(true);
   }
   
+    /// Writes the scores and names to two textfiles
   public void saveGame(Player[] Players) {
     try {
-	  PrintWriter writeNames = new PrintWriter("savednames.txt");
-	  PrintWriter writeScores = new PrintWriter("savedscores.txt");
-	  for (int i=0;i<Players.length;i++) {
-		writeNames.println(Players[i].getName());
-	  }
-	  writeNames.close();
-	  for (int i=0;i<Players.length;i++) {
-	    writeScores.println(Players[i].getScoreString());
-	  }
-	  writeScores.close();
-	}
-	catch (IOException e) {e.printStackTrace();}
-
+      PrintWriter writeNames = new PrintWriter("savednames.txt");
+      PrintWriter writeScores = new PrintWriter("savedscores.txt");
+      for (int i=0;i<Players.length;i++) {
+        writeNames.println(Players[i].getName());
+      }
+      writeNames.close();
+      for (int i=0;i<Players.length;i++) {
+        writeScores.println(Players[i].getScoreString());
+      }
+      writeScores.close();
+    }
+    catch (IOException e) {e.printStackTrace();}
   }
 }

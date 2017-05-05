@@ -73,35 +73,34 @@ private JPanel contentPane; /// Main content window
     /// + Update player information
     /// + Choose player
   public void actionPerformed(ActionEvent e) {
-	if(e.getSource().equals(Load)) {
-		try {
-		BufferedReader xxx = new BufferedReader(new FileReader("savednames.txt"));
-		BufferedReader yyy = new BufferedReader(new FileReader("savedscores.txt"));
+    if(e.getSource().equals(Load)) {
+      try {
+        BufferedReader xxx = new BufferedReader(new FileReader("savednames.txt"));
+        BufferedReader yyy = new BufferedReader(new FileReader("savedscores.txt"));
         ArrayList<String> names = new ArrayList<String>();
-		String s;
+        String s;
         while(( s = xxx.readLine()) != null) {
-        names.add(s);
-        
+          names.add(s);
         }
         xxx.close();
-		ArrayList<String> scores = new ArrayList<String>();
-		String ss;
-		while(( ss = yyy.readLine()) != null) {
-        scores.add(ss);
+        ArrayList<String> scores = new ArrayList<String>();
+        String ss;
+        while(( ss = yyy.readLine()) != null) {
+          scores.add(ss);
         }
         yyy.close();
-		String[] namesArray = names.toArray(new String[0]);
-		String[] scoresArray = scores.toArray(new String[0]);
-		System.out.println(namesArray[0]);
+        String[] namesArray = names.toArray(new String[0]);
+        String[] scoresArray = scores.toArray(new String[0]);
+        System.out.println(namesArray[0]);
         System.out.println(scoresArray[0]);
-		initGUI(namesArray, scoresArray);
-		}
-		catch (IOException e2) {e2.printStackTrace();}
+        initGUI(namesArray, scoresArray);
+      }
+      catch (IOException e2) {e2.printStackTrace();}
 
-		
-		
-	  this.dispose();
-    }		 
+
+        
+      this.dispose();
+    }
     else if(e.getSource().equals(Go)) {
       this.dispose(); 
       createFrame(numberofplayers);
@@ -132,6 +131,13 @@ private JPanel contentPane; /// Main content window
     else logic = new GameLogic(allNames, allScores);
     allPlayers = logic.getPlayers().clone();
     Display runGame = new Display(allPlayers, logic);
+    runGame.setVisible(true);
+  }
+  
+  public void initGUI(String[] names, String[] scores) {
+    GameLogic logic2 = new GameLogic(names, scores);
+    allPlayers = logic2.getPlayers().clone();
+    Display runGame = new Display(allPlayers, logic2);
     runGame.setVisible(true);
   }
     
@@ -258,12 +264,5 @@ private JPanel contentPane; /// Main content window
         } catch (Exception e) {}
       }
     });
-  }
-  
-  public void initGUI(String[] names, String[] scores) {
-    GameLogic logic2 = new GameLogic(names, scores);
-	allPlayers = logic2.getPlayers().clone();
-    Display runGame = new Display(allPlayers, logic2);
-    runGame.setVisible(true);
   }
 }
